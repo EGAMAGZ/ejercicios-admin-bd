@@ -183,6 +183,17 @@ WHERE
 
 -- 4) Realizar las siguientes consultas ordenando los datos por depto, inquilino u otro dato según se necesite para dar claridad a la consulta:
 -- a ) Una consulta que nos muestre información de los depto. y saber si esta rentado:
+DELIMITER //
+CREATE FUNCTION has_element(elements BOOLEAN)
+RETURNS VARCHAR(3) DETERMINISTIC
+BEGIN
+	IF elements IS TRUE THEN
+		RETURN "Si";
+	ELSE
+		RETURN "No";
+	END IF;
+END; //
+DELIMITER ;
 
 
 SELECT
@@ -193,18 +204,9 @@ SELECT
 	END AS "Nomb_inq",
 	clasificacion.descrip_clasificacion AS "Clasif.",
 	depto.num_rec AS "# REC",
-	CASE
-		WHEN depto.chimenea IS TRUE THEN "Si"
-		ELSE "No"
-	END AS "Chimenea",
-	CASE
-		WHEN depto.lavaplatos IS TRUE THEN "Si"
-		ELSE "No"
-	END AS "Lavaplatos",
-	CASE
-		WHEN depto.cocina_int IS TRUE THEN "Si"
-		ELSE "No"
-	END AS "cocina_int",
+	has_element(depto.chimenea) AS "Chimenea",
+	has_element(depto.lavaplatos) AS "Lavaplatos",
+	has_element(depto.cocina_int) AS "Cocina_int",
 	CASE
 		WHEN depto.id_inquilino IS NOT NULL THEN "Si"
 		ELSE "No"
