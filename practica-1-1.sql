@@ -32,6 +32,7 @@ CREATE TABLE EMPLEADO (
     FOREIGN KEY(NUM_JEFE) REFERENCES EMPLEADO(NUM_EMP)
 );
 
+-- Insertar y verificar valores de tabla Puesto
 INSERT INTO
     PUESTO
 VALUES
@@ -77,6 +78,12 @@ INSERT INTO
 VALUES
     (9, 'SUB GERENTE VTA', 120);
 
+SELECT
+    *
+FROM
+    PUESTO;
+
+-- Insertar y verificar valores de tabla Depto
 INSERT INTO
     DEPTO
 VALUES
@@ -102,6 +109,12 @@ INSERT INTO
 VALUES
     (5, 'VENTAS', '2DO PISO');
 
+SELECT
+    *
+FROM
+    DEPTO;
+
+-- Insertar y verificar valores de tabla Empleado, con case de valores nulos
 INSERT INTO
     EMPLEADO
 VALUES
@@ -158,40 +171,70 @@ VALUES
     (11, 'JUDITH', 1, 2, 5, 15, 28);
 
 SELECT
-    *
+    NUM_EMP,
+    NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    NUM_DEPTO,
+    NUM_PUESTO,
+    HORAS_CONTRATADAS,
+    EDAD
 FROM
     EMPLEADO;
-
-SELECT
-    *
-FROM
-    DEPTO;
-
-SELECT
-    *
-FROM
-    PUESTO;
 
 -- Obtener el nombre del empleado, el depto donde trabaja y el puesto que tiene
 -- Paso 1 hacer el join entre empleado y depto ver bufer de datos el cual
 SELECT
-    *
+    EMPLEADO.NUM_EMP,
+    EMPLEADO.NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    EMPLEADO.NUM_DEPTO,
+    EMPLEADO.NUM_PUESTO,
+    EMPLEADO.HORAS_CONTRATADAS,
+    EMPLEADO.EDAD,
+    DEPTO.NUM_DEPTO,
+    DEPTO.NOMB,
+    DEPTO.UBIC
 FROM
     EMPLEADO,
     DEPTO
 WHERE
-    EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO;
+    EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
+ORDER BY
+    empleado.NUM_EMP;
 
 -- Paso 2 al buffer anterior hacerle el join con el puesto ver el nuevo buffer
 SELECT
-    *
+    EMPLEADO.NUM_EMP,
+    EMPLEADO.NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    EMPLEADO.NUM_DEPTO,
+    EMPLEADO.NUM_PUESTO,
+    EMPLEADO.HORAS_CONTRATADAS,
+    EMPLEADO.EDAD,
+    DEPTO.NUM_DEPTO,
+    DEPTO.NOMB,
+    DEPTO.UBIC,
+    puesto.NUM_PUESTO,
+    puesto.NOMB,
+    puesto.SUELDO_HORA
 FROM
     EMPLEADO,
     DEPTO,
     PUESTO
 WHERE
     EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
-    AND EMPLEADO.NUM_PUESTO = PUESTO.NUM_PUESTO;
+    AND EMPLEADO.NUM_PUESTO = PUESTO.NUM_PUESTO
+ORDER BY
+    empleado.NUM_EMP;
 
 -- Paso 3 al buffer anterior hacer la proyección con lo que se solicito, ver el nuevo buffer
 SELECT
@@ -221,35 +264,70 @@ WHERE
 
 -- Paso 1 hacer el join entre empleado y depto ver bufer de datos el cual
 SELECT
-    *
-FROM
-    EMPLEADO
-    JOIN DEPTO ON EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO;
-
--- Paso 2 al buffer anterior hacerle el join con el puesto ver el nuevo buffer
-SELECT
-    *
+    EMPLEADO.NUM_EMP,
+    EMPLEADO.NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    EMPLEADO.NUM_DEPTO,
+    EMPLEADO.NUM_PUESTO,
+    EMPLEADO.HORAS_CONTRATADAS,
+    EMPLEADO.EDAD,
+    DEPTO.NUM_DEPTO,
+    DEPTO.NOMB,
+    DEPTO.UBIC
 FROM
     EMPLEADO
     JOIN DEPTO ON EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
-    JOIN PUESTO ON EMPLEADO.NUM_PUESTO = PUESTO.NUM_PUESTO;
+ORDER BY
+    empleado.NUM_EMP;
+
+-- Paso 2 al buffer anterior hacerle el join con el puesto ver el nuevo buffer
+SELECT
+    EMPLEADO.NUM_EMP,
+    EMPLEADO.NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    EMPLEADO.NUM_DEPTO,
+    EMPLEADO.NUM_PUESTO,
+    EMPLEADO.HORAS_CONTRATADAS,
+    EMPLEADO.EDAD,
+    DEPTO.NUM_DEPTO,
+    DEPTO.NOMB,
+    DEPTO.UBIC,
+    puesto.NUM_PUESTO,
+    puesto.NOMB,
+    puesto.SUELDO_HORA
+FROM
+    EMPLEADO
+    JOIN DEPTO ON EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
+    JOIN puesto ON empleado.NUM_PUESTO = puesto.NUM_PUESTO
+ORDER BY
+    empleado.NUM_EMP;
 
 -- Paso 3 al buffer anterior hacer la proyección con lo que se solicito, ver el nuevo buffer
 SELECT
     EMPLEADO.NOMB,
     DEPTO.NOMB,
-    PUESTO.NOMB
+    puesto.NOMB
 FROM
     EMPLEADO
     JOIN DEPTO ON EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
-    JOIN PUESTO ON EMPLEADO.NUM_PUESTO = PUESTO.NUM_PUESTO;
+    JOIN puesto ON empleado.NUM_PUESTO = puesto.NUM_PUESTO
+ORDER BY
+    empleado.NUM_EMP;
 
 -- Paso 4 Ponemos los alias correspondientes
 SELECT
-    EMPLEADO.NOMB Empleado,
-    DEPTO.NOMB Departamento,
-    PUESTO.NOMB Puesto
+    EMPLEADO.NOMB AS "Empleado",
+    DEPTO.NOMB AS "Departamento",
+    puesto.NOMB AS "Puesto"
 FROM
     EMPLEADO
     JOIN DEPTO ON EMPLEADO.NUM_DEPTO = DEPTO.NUM_DEPTO
-    JOIN PUESTO ON EMPLEADO.NUM_PUESTO = PUESTO.NUM_PUESTO;
+    JOIN puesto ON empleado.NUM_PUESTO = puesto.NUM_PUESTO
+ORDER BY
+    empleado.NUM_EMP;
