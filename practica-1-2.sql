@@ -3,7 +3,16 @@ USE EMPLEADOS_Join;
 
 -- Verificar la información de la tablas
 SELECT
-    *
+    NUM_EMP,
+    NOMB,
+    CASE
+        WHEN NUM_JEFE IS NULL THEN 0
+        ELSE NUM_JEFE
+    END AS NUM_JEFE,
+    NUM_DEPTO,
+    NUM_PUESTO,
+    HORAS_CONTRATADAS,
+    EDAD
 FROM
     EMPLEADO;
 
@@ -34,8 +43,14 @@ WHERE
 SELECT
     EMPLEADO.NUM_EMP,
     EMPLEADO.NOMB NOMBRE_EMPLEADO,
-    JEFES.NUM_EMP NUM_JEFE,
-    JEFES.NOMB NOMBRE_JEFE
+    CASE
+        WHEN JEFES.NUM_EMP IS NULL THEN 0
+        ELSE JEFES.NUM_EMP
+    END AS NUM_JEFE,
+    CASE
+        WHEN JEFES.NOMB IS NULL THEN ""
+        ELSE JEFES.NOMB
+    END AS NOMBRE_JEFE
 FROM
     EMPLEADO
     LEFT JOIN EMPLEADO JEFES ON EMPLEADO.NUM_JEFE = JEFES.NUM_EMP;
@@ -43,8 +58,14 @@ FROM
 -- Ejemplo del Rigth Join Tomo la tabla de Jefe como Base recuerde que es una copia de Empleado
 -- Y por cada empleado de la tabla de Jefe fue hacer el match JEFES.NUM_EMP = EMPLEADO.NUM_JEFE con la tabla Empleado
 SELECT
-    EMPLEADO.NUM_EMP,
-    EMPLEADO.NOMB NOMBRE_EMPLEADO,
+    CASE
+        WHEN EMPLEADO.NUM_EMP IS NULL THEN 0
+        ELSE EMPLEADO.NUM_EMP
+    END AS NUM_EMP,
+    CASE
+        WHEN EMPLEADO.NOMB IS NULL THEN ""
+        ELSE EMPLEADO.NOMB
+    END AS NOMBRE_EMPLEADO,
     JEFES.NUM_EMP NJEFE,
     JEFES.NOMB NOMBRE_JEFE
 FROM
@@ -53,14 +74,14 @@ FROM
 
 -- Ejemplo del FULL OUTER Join Trea tanto el Left, Inner, Rigth en una sola consulta.
 -- Observe el resultado
--- SELECT
---     EMPLEADO.NUM_EMP,
---     EMPLEADO.NOMB NOMBRE_EMPLEADO,
---     JEFES.NUM_EMP NJEFE,
---     JEFES.NOMB NOMBRE_JEFE
--- FROM
---     EMPLEADO FULL
---     OUTER JOIN EMPLEADO JEFES ON EMPLEADO.NUM_JEFE = JEFES.NUM_EMP;
+SELECT
+    EMPLEADO.NUM_EMP,
+    EMPLEADO.NOMB NOMBRE_EMPLEADO,
+    JEFES.NUM_EMP NJEFE,
+    JEFES.NOMB NOMBRE_JEFE
+FROM
+    EMPLEADO 
+    FULL OUTER JOIN EMPLEADO JEFES ON EMPLEADO.NUM_JEFE = JEFES.NUM_EMP;
 
 -- En los sigs. ejemplos Agregamos la clausula WHERE que es una selección
 -- Al ejemplo anterior del Left Join le aplicamos la clausula WHERE JEFES.NUM_EMP IS NULL
@@ -68,8 +89,14 @@ FROM
 SELECT
     EMPLEADO.NUM_EMP,
     EMPLEADO.NOMB NOMBRE_EMPLEADO,
-    JEFES.NUM_EMP NUM_JEFE,
-    JEFES.NOMB NOMBRE_JEFE
+    CASE
+        WHEN JEFES.NUM_EMP IS NULL THEN 0
+        ELSE JEFES.NUM_EMP
+    END AS NUM_JEFE,
+    CASE
+        WHEN JEFES.NOMB IS NULL THEN ""
+        ELSE JEFES.NOMB
+    END AS NOMBRE_JEFE
 FROM
     EMPLEADO
     LEFT JOIN EMPLEADO JEFES ON EMPLEADO.NUM_JEFE = JEFES.NUM_EMP
@@ -78,8 +105,14 @@ WHERE
 
 -- Al ejemplo anterior del Right le aplicamos la clausula WHERE JEFES.NUM_EMP IS NULL
 SELECT
-    EMPLEADO.NUM_EMP,
-    EMPLEADO.NOMB NOMBRE_EMPLEADO,
+    CASE
+        WHEN EMPLEADO.NUM_EMP IS NULL THEN 0
+        ELSE EMPLEADO.NUM_EMP
+    END AS NUM_EMP,
+    CASE
+        WHEN EMPLEADO.NOMB IS NULL THEN ""
+        ELSE EMPLEADO.NOMB
+    END AS NOMBRE_EMPLEADO,
     JEFES.NUM_EMP NJEFE,
     JEFES.NOMB NOMBRE_JEFE
 FROM
@@ -93,8 +126,14 @@ SELECT
     EMPLEADO.NUM_EMP,
     EMPLEADO.NOMB NOMBRE_EMPLEADO,
     PUESTO.NOMB PUESTO,
-    JEFES.NUM_EMP NUM_JEFE,
-    JEFES.NOMB NOMBRE_JEFE
+    CASE
+        WHEN JEFES.NUM_EMP IS NULL THEN 0
+        ELSE JEFES.NUM_EMP
+    END AS NUM_JEFE,
+    CASE
+        WHEN JEFES.NOMB IS NULL THEN ""
+        ELSE JEFES.NOMB
+    END AS NOMBRE_JEFE
 FROM
     (
         EMPLEADO
@@ -123,8 +162,14 @@ FROM
 SELECT
     emp.num_emp,
     emp.nomb AS nombre_empleado,
-    jefe.num_emp AS njefe,
-    jefe.nomb AS nombre_jefe,
+    CASE
+        WHEN jefe.num_emp IS NULL THEN 0
+        ELSE jefe.num_emp
+    END AS njefe,
+    CASE
+        WHEN jefe.nomb IS NULL THEN ''
+        ELSE jefe.nomb
+    END AS nombre_jefe,
     CASE
         WHEN emp.num_jefe IS NULL THEN 'Es Jefe'
         ELSE 'Es empleado'
@@ -145,12 +190,19 @@ FROM
 -- Si la logran hacer en 10 minutos "Felicidades" ya aprendieron.
 -- Recuerden pueden usar Select * para ir viendo el buffer de sus Joins
 SELECT
-	e1.NUM_EMP AS "",
-	e1.NOMB AS "EMPLEADO",
-	p1.NOMB AS "PUESTO",
-	e2.NOMB AS "JEFE",
-	p2.NOMB AS "PUESTO_JEFE"
-FROM empleado e1
-JOIN puesto p1 ON p1.NUM_PUESTO = e1.NUM_PUESTO
-LEFT JOIN empleado e2 ON e1.NUM_JEFE = e2.NUM_EMP
-LEFT JOIN puesto p2 ON p2.NUM_PUESTO=e2.NUM_PUESTO;
+    e1.NUM_EMP AS "",
+    e1.NOMB AS "EMPLEADO",
+    p1.NOMB AS "PUESTO",
+    CASE
+        WHEN e2.NOMB IS NULL THEN ""
+        ELSE e2.NOMB
+    END AS "JEFE",
+    CASE
+        WHEN p2.NOMB IS NULL THEN ""
+        ELSE p2.NOMB
+    END AS "PUESTO_JEFE"
+FROM
+    empleado e1
+    JOIN puesto p1 ON p1.NUM_PUESTO = e1.NUM_PUESTO
+    LEFT JOIN empleado e2 ON e1.NUM_JEFE = e2.NUM_EMP
+    LEFT JOIN puesto p2 ON p2.NUM_PUESTO = e2.NUM_PUESTO;
