@@ -44,12 +44,6 @@ create table det_fact (
     foreign key (id_fact) references factura(id_fact)
 );
 
--- Verifica el contenido de la tabla de clientes
-select
-    *
-from
-    cat_clie;
-
 -- Inserta registros en la tabla de clientes
 insert into
     cat_clie
@@ -76,38 +70,38 @@ insert into
 values
     (49, 'Ricardo Mtz.', '5544466677', 'sur 34');
 
+-- Verifica el contenido de la tabla de clientes
+select
+    *
+from
+    cat_clie;
+
+-- Inserta registros en la tabla de facturas
+insert into
+    factura(id_fact, id_clie, total_fact, fecha_fact)
+values
+    (1, 45, 100.00, '2012-05-16');
+
+insert into
+    factura(id_fact, id_clie, total_fact, fecha_fact)
+values
+    (2, 45, 150.50, '2012-05-16');
+
+insert into
+    factura(id_fact, id_clie, total_fact, fecha_fact)
+values
+    (3, 46, 101.25, '2012-05-16');
+
+insert into
+    factura(id_fact, id_clie, total_fact, fecha_fact)
+values
+    (4, 47, 111.25, '2012-05-16');
+
 -- Verifica el contenido de la tabla de facturas
 select
     *
 from
     factura;
-
--- Inserta registros en la tabla de facturas
-insert into
-    factura
-values
-    (1, 45, 100.00, '05/16/2012');
-
-insert into
-    factura
-values
-    (2, 45, 150.50, '2012/05/16');
-
-insert into
-    factura
-values
-    (3, 46, 101.25, '05/16/2012');
-
-insert into
-    factura
-values
-    (4, 47, 111.25, '05/16/2012');
-
--- Verifica el contenido de la tabla de articulos
-select
-    *
-from
-    articulo;
 
 -- Inserta registros en la tabla de articulos
 insert into
@@ -140,11 +134,11 @@ insert into
 values
     (23, 'desarmador', 10.25);
 
--- Verifica el contenido de la tabla de detalle de facturas
+-- Verifica el contenido de la tabla de articulos
 select
     *
 from
-    det_fact;
+    articulo;
 
 -- Inserta registros en la tabla de detalle de facturas
 insert into
@@ -192,26 +186,13 @@ insert into
 values
     (4, 32, 5.0);
 
-select
-    *
-from
-    cat_clie;
-
-select
-    *
-from
-    factura;
-
-select
-    *
-from
-    articulo;
-
+-- Verifica el contenido de la tabla de detalle de facturas
 select
     *
 from
     det_fact;
 
+-- Crear tabla de autor con auto-refencia
 create table autor (
     id_aut varchar(2) not null,
     primary key (id_aut),
@@ -220,11 +201,7 @@ create table autor (
     foreign key (pseudo_de) references autor(id_aut)
 );
 
-insert into
-    autor (nomb_aut)
-values
-    ('Alex');
-
+-- Insertar registros en la tabla de autor
 insert into
     autor
 values
@@ -245,7 +222,13 @@ insert into
 values
     ('A4', 'Sancho', 'A2');
 
+-- Verifica el contenido de la tabla de detalle de facturas, con case de valores nulos
 select
-    *
+    id_aut,
+    nomb_aut,
+    case
+        when pseudo_de IS NULL then ' '
+        else pseudo_de
+    end as pseudo_de
 from
     autor;
