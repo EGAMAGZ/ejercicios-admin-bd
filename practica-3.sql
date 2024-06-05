@@ -1,486 +1,160 @@
 DROP DATABASE IF EXISTS Ventas_X1;
 
--- Crea Base de Datos Ventas
-create database Ventas_X1;
+CREATE DATABASE Ventas_X1;
 
-use Ventas_X1;
+USE Ventas_X1;
 
--- Crea la tabla del Usuarios
--- Verifique como funciona el identity
-create Table Usuarios(
-       id_usuario int primary key AUTO_INCREMENT,
-       nombre_usuario varchar(40),
-       contrasena varchar(20)
+CREATE TABLE Usuarios(
+	id_ususario INT PRIMARY KEY AUTO_INCREMENT,
+	nombre_usuario VARCHAR(20),
+	contrasena VARCHAR(20)
 );
 
--- inserta usuarios
-Insert into
-       Usuarios(nombre_usuario, contrasena)
-Values
-       ('Juanito', 'xxxx123');
+INSERT INTO Usuarios(nombre_usuario, contrasena)
+VALUES
+	('Juanito', 'xxxx123'),
+	('Luis', 'YYYY126');
 
-Insert into
-       Usuarios(nombre_usuario, contrasena)
-Values
-       ('Luis', 'YYYY126');
+SELECT * FROM Usuarios;
 
-Select
-       *
-from
-       Usuarios;
-
--- Crea tabla Cliente
-create table cliente(
-       id_clie int not null primary key,
-       nom_clie varchar (40),
-       rfc_clie varchar(11) NOT NULL,
-       tel_clie varchar(15) default '99999999999999',
-       dir_clie varchar(40),
-       suspendido bit default 0
+CREATE TABLE Cliente(
+	id_clie INT NOT NULL PRIMARY KEY,
+	nom_clie VARCHAR(40),
+	rfc_clie VARCHAR(11) NOT NULL,
+	tel_clie VARCHAR(15) DEFAULT '99999999999999',
+	dir_clie VARCHAR(40),
+	suspendido BOOLEAN DEFAULT FALSE,
+	CONSTRAINT check_rfc CHECK(rfc_clie REGEXP '^[A-Za-z][A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9][0-9][0-9]$')
 );
 
--- Crea la tabla de Articulos
-CREATE TABLE articulo (
-       id_art INT NOT NULL PRIMARY KEY,
-       nom_art VARCHAR(25) DEFAULT 'XXXXXXXXXXXXXX',
-       prec_art DECIMAL(10, 2) DEFAULT 0.00,
-       peso_art DECIMAL(10, 2),
-       existencia FLOAT,
-       color_art INT CHECK (
-              color_art BETWEEN 0
-              AND 20
-       ),
-       um_art VARCHAR(10) DEFAULT 'DEF_PZA'
+CREATE TABLE Articulo(
+	id_art INT NOT NULL PRIMARY KEY,
+	nom_art VARCHAR(25) DEFAULT 'XXXXXXXXXXXXXX',
+	prec_art DECIMAL(10, 2) DEFAULT 0.00,
+	peso_art DECIMAL(10, 2),
+	existencia FLOAT,
+	color_art INT,
+	um_art VARCHAR(10) DEFAULT 'DEF_PZA',
+	CONSTRAINT chk_color1 CHECK(color_art BETWEEN 0 AND 20)
 );
 
--- Crea la tabla de Facturas
-create table factura (
-       id_fact int not null,
-       id_clie int not null,
-       total_fact DECIMAL(10, 2),
-       fecha_fact date null default CURRENT_TIMESTAMP,
-       fecha_entrega datetime null,
-       primary key (id_fact),
-       foreign key (id_clie) references cliente ON DELETE CASCADE
+CREATE TABLE Factura(
+	id_fact INT NOT NULL PRIMARY KEY,
+	id_clie INT NOT NULL,
+	total_fact DECIMAL(10,2),
+	fecha_fact DATE DEFAULT CURRENT_TIMESTAMP,
+	fecha_entrega DATETIME NULL,
+	FOREIGN KEY (id_clie) REFERENCES Cliente(id_clie) ON DELETE CASCADE
 );
 
--- Crea la Tabla de Detalle de Facturas
-create table det_fact (
-       id_fact int not null,
-       id_art int not null,
-       cant_art float,
-       primary key (id_fact, id_art),
-       foreign key (id_art) references articulo ON UPDATE cascade,
-       foreign key (id_fact) references factura ON DELETE cascade
+CREATE TABLE det_fact(
+	id_fact INT NOT NULL,
+	id_art INT NOT NULL,
+	cant_art FLOAT,
+	PRIMARY KEY (id_fact, id_art),
+	FOREIGN KEY (id_art) REFERENCES Articulo(id_art) ON UPDATE CASCADE,
+	FOREIGN KEY (id_fact) REFERENCES Factura(id_fact) ON DELETE CASCADE
 );
 
--- Inserta registros en la tabla de clientes
--- 1) Verifica default usuario que da los insert
-insert into
-       cliente (
-              id_clie,
-              nom_clie,
-              rfc_clie,
-              dir_clie,
-              suspendido
-       )
-values
-       (45, 'Jose Hdez.', 'XwXA-910101', 'sur 30', 0);
+INSERT INTO Cliente(id_clie,nom_clie, rfc_clie, dir_clie, suspendido)
+VALUES (45, 'Jose Hdez.', 'XwXA-910101','sur 30', FALSE);
 
-select
-       *
-from
-       cliente;
+SELECT * FROM Cliente;
 
 -- 2) Verifica default suspendido
-insert into
-       cliente (id_clie, nom_clie, rfc_clie, tel_clie, dir_clie)
-values
-       (
-              41,
-              'Pedro Olvera',
-              'AGXA-910101',
-              '5544466677',
-              'sur 31'
-       );
+INSERT INTO Cliente(id_clie, nom_clie, rfc_clie, tel_clie, dir_clie)
+VALUES (41, 'Pedro Olvera', 'AGXA-910101','5544466677','sur 31');
 
--- 3)
-insert into
-       cliente (
-              id_clie,
-              nom_clie,
-              rfc_clie,
-              tel_clie,
-              dir_clie,
-              suspendido
-       )
-values
-       (
-              47,
-              'Luis Piedra',
-              'BBXA-910101',
-              '5544466677',
-              'sur 32',
-              1
-       );
+INSERT INTO Cliente VALUES 
+	(47, 'Luis Piedra', 'BBXA-910101','5544466677','sur 32', TRUE),
+	(48, 'Osvaldo IX', 'LLXA-910101','5544466677','sur 33', FALSE),
+	(49, 'Ricardo Mtz.', 'CcXA-910101','5544466677','sur 34', TRUE);
 
-insert into
-       cliente (
-              id_clie,
-              nom_clie,
-              rfc_clie,
-              tel_clie,
-              dir_clie,
-              suspendido
-       )
-values
-       (
-              48,
-              'Osvaldo IX',
-              'LLXA-910101',
-              '5544466677',
-              'sur 33',
-              0
-       );
+SELECT * FROM Cliente;
 
-insert into
-       cliente (
-              id_clie,
-              nom_clie,
-              rfc_clie,
-              tel_clie,
-              dir_clie,
-              suspendido
-       )
-values
-       (
-              49,
-              'Ricardo Mtz.',
-              'CcXA-910101',
-              '5544466677',
-              'sur 34',
-              1
-       );
-
-select
-       *
-from
-       cliente;
-
--- 3) verifica RFC
-insert into
-       cliente (
-              id_clie,
-              nom_clie,
-              rfc_clie,
-              tel_clie,
-              dir_clie,
-              suspendido
-       )
-values
-       (
-              44,
-              'Rosa Alamraz',
-              'R7XA-910101',
-              '5544466677',
-              'sur 34',
-              0
-       );
+-- 3) Verifica RFC
+INSERT INTO Cliente VALUES 
+	(44, 'Rosa Alamraz', 'R7XA-910101','5544466677','sur 34', FALSE);
 
 -- Inserta registros en la tabla de articulos
 -- 1) verificar check color y defaults
-insert into
-       articulo (
-              id_art,
-              prec_art,
-              peso_art,
-              existencia,
-              color_art
-       )
-values
-       (15, 121.45467, 130.2366, 44.2366, 10);
+INSERT INTO Articulo(id_art, prec_art, peso_art, existencia, color_art)
+VALUES (15, 121.45467,130.2366, 44.2366, 10);
 
 -- 2)Verificar Redondeos Precios, Cast
-insert into
-       articulo
-values
-       (
-              22,
-              'Mesa',
-              1000.45463,
-              50.2345,
-              200.23459,
-              10,
-              'Conjunto'
-       );
+INSERT INTO Articulo VALUES
+	(22, 'Mesa', 1000.45463, 50.2345, 200.23459, 10, 'Conjunto'),
+	(23, 'Silla',300.4500, 15.2379, 1.2379, 15, 'kid 4'),
+	(24, 'Silla', 100.4500, 15.2379, 1.2379, 15, 'kid 4'),
+	(32, 'Sala', CAST('10000.45999' as DECIMAL(10,2)), 40.2399, 200.2399, 3, 'kid 3'),
+	(50, 'Puerta', 125.45111, 10.2311, 200.2311, 4, 'PZA'),
+	(54, 'Lampara', 50.00, 20.00, 10.00, 6, 'PZA'),
+	(64, 'Estufa', 10.25, 10.00, 10.00, 7, 'PZA'),
+	(53, 'Gancho', 20.377, 20.00, 10.00, 6, 'PZA'),
+	(63, 'Taza', 70.254, 10.00, 10.00, 7, 'PZA');
 
-insert into
-       articulo
-values
-       (
-              23,
-              'Silla',
-              300.4500,
-              15.2379,
-              1.2379,
-              15,
-              'kid 4'
-       );
-
-insert into
-       articulo
-values
-       (
-              24,
-              'Silla',
-              100.4500,
-              15.2379,
-              1.2379,
-              15,
-              'kid 4'
-       );
-
-insert into
-       articulo
-values
-       (
-              32,
-              'Sala',
-              10000.46,
-              40.2399,
-              200.2399,
-              3,
-              'kid 3'
-       );
-
-insert into
-       articulo
-values
-       (
-              50,
-              'Puerta',
-              125.45111,
-              10.2311,
-              200.2311,
-              4,
-              'PZA'
-       );
-
-insert into
-       articulo
-values
-       (54, 'Lampara', 50.00, 20.00, 10.00, 6, 'PZA');
-
-insert into
-       articulo
-values
-       (64, 'Estufa', 10.25, 10.00, 10.00, 7, 'PZA');
-
-insert into
-       articulo
-values
-       (53, 'Gancho', 20.377, 20.00, 10.00, 6, 'PZA');
-
-insert into
-       articulo
-values
-       (63, 'Taza', 70.254, 10.00, 10.00, 7, 'PZA');
-
-select
-       *
-from
-       articulo;
+SELECT * FROM Articulo;
 
 -- Inserta registros en la tabla de facturas
 -- Verificar Fechas
-insert into
-       factura
-values
-       (1, 45, 100.00, NULL, '2012/05/16');
+INSERT INTO Factura VALUES (1, 45, 100.00,NULL, '2012-05-16');
+INSERT INTO Factura(id_fact, id_clie, total_fact) VALUES (2, 47, 111.25);
+INSERT INTO Factura VALUES 
+	(3, 45, 150.50, '2012-05-16', '2012-05-31');
+INSERT INTO Factura VALUES 
+	(4, 48, 101.25, '2012-05-16', '2012-05-31');
 
-insert into
-       factura (id_fact, id_clie, total_fact)
-values
-       (2, 47, 111.25);
-
-insert into
-       factura
-values
-       (3, 45, 150.50, '2012/05/16', '2012-05-31');
-
-insert into
-       factura
-values
-       (4, 48, 101.25, '2012/05/16', '2012-05-31');
-
-select
-       *
-from
-       factura;
-
-select
-       *
-from
-       cliente;
+SELECT * FROM Factura;
+SELECT * FROM Cliente;
 
 -- Inserta registros en la tabla de detalle de facturas
 /* Verifica default para id_art */
-insert into
-       det_fact (id_fact, cant_art)
-values
-       (1, 2.0);
+INSERT INTO det_fact(id_fact, cant_art) VALUES(1, 2.0);
 
 -- 2)
-insert into
-       det_fact
-values
-       (1, 54, 1.0);
+INSERT INTO det_fact VALUES
+	(1,54, 1.0);
+INSERT INTO det_fact VALUES
+	(1,32,2.0);
+INSERT INTO det_fact VALUES
+	(3, 15, 1.0);
+INSERT INTO det_fact VALUES
+	(3,23,5.0);
+INSERT INTO det_fact VALUES
+	(2,32,1.0);
+INSERT INTO det_fact VALUES
+	(2,54,5.0);
+INSERT INTO det_fact VALUES
+	(4,15,1.0);
+INSERT INTO det_fact VALUES
+	(4,32,5.0);
 
-insert into
-       det_fact
-values
-       (1, 32, 2.0);
-
-insert into
-       det_fact
-values
-       (3, 15, 1.0);
-
-insert into
-       det_fact
-values
-       (3, 23, 5.0);
-
-insert into
-       det_fact
-values
-       (2, 32, 1.0);
-
-insert into
-       det_fact
-values
-       (2, 54, 5.0);
-
-insert into
-       det_fact
-values
-       (4, 15, 1.0);
-
-insert into
-       det_fact
-values
-       (4, 32, 5.0);
-
-select
-       *
-from
-       det_fact;
+SELECT * FROM det_fact;
 
 -- 1ER paso Veriicar si se puede Borrar Cliente con sus Facturas Clausula On Delete Cascada
-select
-       *
-from
-       cliente
-where
-       id_clie = 47;
-
-Select
-       *
-from
-       factura
-where
-       id_fact = 2;
-
-Select
-       *
-from
-       det_fact
-where
-       id_fact = 2;
-
+SELECT * FROM cliente WHERE id_clie = 47;
+SELECT * FROM Factura WHERE id_fact = 2;
+SELECT * FROM det_fact WHERE id_fact = 2;
 -- 1) Borrar factura
-delete from
-       factura
-where
-       id_fact = 2;
-
+DELETE FROM Factura WHERE id_fact = 2;
 -- 2) Borrar Cliente con sus facturas
-delete from
-       cliente
-where
-       id_clie = 45;
-
-select
-       *
-from
-       cliente
-where
-       id_clie = 45;
-
-Select
-       *
-from
-       factura
-where
-       id_fact = 2;
-
-Select
-       *
-from
-       det_fact
-where
-       id_fact = 2;
+DELETE FROM Cliente WHERE id_clie = 45;
 
 -- 2do paso Veriicar si se puede Actualizar Articulo en Factura Clausula On update Cascada
-select
-       *
-from
-       articulo
-where
-       id_art = 15;
+SELECT * FROM Articulo WHERE id_art = 47;
+SELECT * FROM det_fact WHERE id_fact = 2;
 
-Select
-       *
-from
-       det_fact
-where
-       id_fact = 4;
-
-update
-       articulo
-set
-       id_art = 17
-where
-       id_art = 15;
-
-select
-       *
-from
-       articulo
-where
-       id_art = 17;
-
-Select
-       *
-from
-       det_fact
-where
-       id_fact = 4;
-
+-- ! Originalmente era SET 15 y WHERE 17, pero como no existe, se invirtio
+UPDATE Articulo SET id_art = 17 WHERE id_art = 15;
 -- 3er paso Veriicar si se puede Borrar Articulo Clausula On Delete
-Drop table Articulo;
-
+DROP TABLE Articulo;
 -- Paso cuatro intente borrar una fila de Articulos Observe el error
-delete from
-       articulo
-where
-       id_art = 17;
+DELETE FROM Articulo WHERE id_art = 17;
 
--- clausula on delete from (Veifica integridad de los datos que se debe hacer).
+-- clausula on delete (Veifica integridad de los datos que se debe hacer).
 -- Verique que pasa con las demas tablas al borrar la tabla del cliente
-delete from
-       cliente;
+DELETE FROM Cliente;
 
-select * from articulo;
-select * from factura;
-select * from det_fact;
+SELECT * FROM Articulo;
+SELECT * FROM Factura;
+SELECT * FROM det_fact;
