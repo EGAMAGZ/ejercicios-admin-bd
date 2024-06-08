@@ -193,7 +193,7 @@ SELECT *,
 FROM det_fact;
 
 -- Altera tabla det_fact y elimina el campo  precio_art y costo_x_art
-ALTER TABLE det_fact DROP prec_art_fact, costo_x_art;
+ALTER TABLE det_fact DROP COLUMN prec_art_fact, DROP COLUMN costo_x_art;
 
 -- Se muestran los registros de la tabla de articulos que cumplan
 -- la condicines de los operadores relacionales.
